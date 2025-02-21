@@ -1,6 +1,6 @@
 --- STEAMODDED HEADER
---- MOD_NAME: TOLG Content Dev
---- MOD_ID: tolgContentDev
+--- MOD_NAME: TOLG Content
+--- MOD_ID: tolgContent
 --- MOD_AUTHOR: [aNyoomie]
 --- MOD_DESCRIPTION: New TOLG Themed Jokers, Deck and more! Also includes TOLG Themed Card Customization!
 --- PREFIX: tolg

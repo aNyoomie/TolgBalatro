@@ -66,7 +66,35 @@ return {
 			["text"] = {
 			  "Wafferscotch",
 			},
-		
 		  }
 		},
+		Sleeve = {
+			sleeve_tolg_tolg = {
+				name = 'Team One Large Guy Sleeve',
+				  text = {
+					'Start with {C:green}Bless{}',
+					'and a {C:spectral}Sending Stone{}'
+				},
+			  },
+			sleeve_tolg_tolg_alt = {
+				name = 'Team One Large Guy Sleeve',
+				  text = {
+					'Start with {C:green}Emboldening Bond{}',
+					'and an {C:spectral}Honorary Badge{}'
+				},
+			  }, 
+			sleeve_tolg_eye = {
+				name = 'Eye Sleeve',
+				text = {
+				'Start with {C:attention}Isla{}, who',
+				'has a {C:green}TOLG Sticker{}'
+			}
+			},
+			sleeve_tolg_eye_alt = {
+				name = "Eye Sleeve",
+				text = {
+				'Start with {C:attention}The Great Eye{}',
+				}
+			},
+        },	
 	  }}

@@ -6,10 +6,11 @@
 --- PREFIX: tolg
 --- BADGE_COLOUR: 5EB631
 --- PRIORITY: 9007199254740991
---- VERSION: 1.2
+--- VERSION: 1.2.1
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
+TOLG = SMODS.current_mod
 SMODS.Atlas { -- modicon
   key = 'modicon',
   path = 'tolgicon.png',
@@ -51,6 +52,13 @@ SMODS.Atlas{
   px = 71,
   py = 95
   }
+
+SMODS.Atlas{
+  key = 'tolgSleeves',
+  path = "sleeves.png",
+	px = 73,
+	py = 95
+}
 
 SMODS.Sound({
 	key = "deltarune_explosion",
@@ -949,60 +957,92 @@ SMODS.Joker{
   end,
 }
 
--- Gab
+-- Copyvena
 SMODS.Joker{
-  key = 'gab',
+  key = 'copyvena',
   loc_txt = {
-    name = 'The DM',
+    name = 'Advena (Copy)',
 	  text = {
-      "{C:green}#1# in #2#{} chance to",
-	    "Create a {C:dark_edition}Negative{} {C:attention}Joker",
-      "with a {C:green}TOLG Sticker{}",
-      "at the end of the {C:attention}shop"
-    },
+      'Retriggers used {C:planet}Planet{} cards,',
+      'Expires after #2# Retriggers {C:inactive}({C:attention}#1#{C:inactive}/{C:attention}#2#{C:inactive})'
+    }
   },
-  rarity = 4,
-  cost = 20,
+  rarity = 1,
+  cost = 3,
   unlocked = true,
   discovered = true,
   blueprint_compat = true,
   perishable_compat = false, 
   eternal_compat = false,
-  inpool = false,
   atlas = 'Jokers',
-  pos = {x = 9, y = 0},
-  soul_pos = {x = 9, y = 1},
-  config = {extra = {odds = 2}},
+  pos = {x = 0, y = 2},
+  config = {extra = {uses=0,extinct=3}},
   loc_vars = function(self,info_queue,center)
     info_queue[#info_queue + 1] = {generate_ui = tolg_artist_tooltip, key = 'sketchy'}
-    info_queue[#info_queue + 1] = { key = "tolg_stick", set = "Other", vars = {} }
-    return {vars = {G.GAME.probabilities.normal, center.ability.extra.odds}}
+    return {vars = {center.ability.extra.uses,center.ability.extra.extinct}}
   end,
   calculate = function(self,card,context)
-    if context.ending_shop and pseudorandom('gab') < G.GAME.probabilities.normal/card.ability.extra.odds then
-      local jokers_to_create = math.min(1,
-        G.jokers.config.card_limit - (#G.jokers.cards + G.GAME.joker_buffer))
-      G.GAME.joker_buffer = G.GAME.joker_buffer + jokers_to_create
-      G.E_MANAGER:add_event(Event({
-        func = function()
-          local card = create_card('Joker', G.jokers, nil, nil, nil, nil,nil, nil)
-          card.ability.tolg_stick = true
-          local edition = {negative = true}
-          card:set_edition(edition, true)
-          card:add_to_deck()
-          G.jokers:emplace(card)
-          card:start_materialize()
-          G.GAME.joker_buffer = 0
-          return true
+    if context.consumeable and not context.blueprint then
+			if context.consumeable.ability.set == "Planet" then
+        if pseudorandom('adv') < G.GAME.probabilities.normal/card.ability.extra.odds then
+          card.ability.extra.uses = card.ability.extra.uses+1
+          if context.consumeable.config.center.key == "c_mp_asteroid" then
+            G.MULTIPLAYER.asteroid()
+            card_eval_status_text(card, 'extra', nil, nil, nil,{message = 'Again!', nil})
+          else
+            card_eval_status_text(card, 'extra', nil, nil, nil,{message = 'Again!', nil})
+            update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {handname=localize(context.consumeable.ability.consumeable.hand_type, 'poker_hands'),chips = G.GAME.hands[context.consumeable.ability.consumeable.hand_type].chips, mult = G.GAME.hands[context.consumeable.ability.consumeable.hand_type].mult, level=G.GAME.hands[context.consumeable.ability.consumeable.hand_type].level})
+            level_up_hand(context.consumeable,context.consumeable.ability.hand_type)
+            update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {mult = 0, chips = 0, handname = '', level = ''})
+          end
+          if next(find_joker("Constellation")) then
+            for i, v in pairs(G.jokers.cards) do
+              if v.ability.name ==  "Constellation" then
+                v.ability.x_mult = v.ability.x_mult + v.ability.extra
+                G.E_MANAGER:add_event(Event({
+                  func = function() card_eval_status_text(v, 'extra', nil, nil, nil, {message = localize{type='variable',key='a_xmult',vars={v.ability.x_mult - v.ability.extra}}}); return true
+                  end}))
+                return
+              end
+            end
+          return
+          end
+          if card.ability.extra.uses == card.ability.extra.extinct then
+            G.E_MANAGER:add_event(Event({
+              func = function()
+                play_sound('tarot1')
+                card.T.r = -0.2
+                card:juice_up(0.3, 0.4)
+                card.states.drag.is = true
+                card.children.center.pinch.x = true
+                G.E_MANAGER:add_event(Event({
+                  trigger = 'after',
+                  delay = 0.3,
+                  blockable = false,
+                  func = function()
+                    G.jokers:remove_card(card)
+                    card:remove()
+                    return true
+                  end
+                  }))
+                return true
+                end
+            }))
+            return {
+              message = localize('k_extinct_ex')
+            }
+          end
+        else
+          card_eval_status_text(card, 'extra', nil, nil, nil,{message = localize('k_nope_ex'), nil})
         end
-      }))
+      end
     end
-  end,
+  end
 }
 
 -- Isla
 SMODS.Joker{
-  key = 'Isla',
+  key = 'isla',
   loc_txt = {
     name = 'Isla',
 	  text = {
@@ -1236,6 +1276,57 @@ SMODS.Joker{
   end
 }
 
+-- Gab
+SMODS.Joker{
+  key = 'gab',
+  loc_txt = {
+    name = 'The DM',
+	  text = {
+      "{C:green}#1# in #2#{} chance to",
+	    "Create a {C:dark_edition}Negative{} {C:attention}Joker",
+      "with a {C:green}TOLG Sticker{}",
+      "at the end of the {C:attention}shop"
+    },
+  },
+  rarity = 4,
+  cost = 20,
+  unlocked = true,
+  discovered = true,
+  blueprint_compat = true,
+  perishable_compat = false, 
+  eternal_compat = false,
+  inpool = false,
+  atlas = 'Jokers',
+  pos = {x = 9, y = 0},
+  soul_pos = {x = 9, y = 1},
+  config = {extra = {odds = 2}},
+  loc_vars = function(self,info_queue,center)
+    info_queue[#info_queue + 1] = {generate_ui = tolg_artist_tooltip, key = 'sketchy'}
+    info_queue[#info_queue + 1] = { key = "tolg_stick", set = "Other", vars = {} }
+    return {vars = {G.GAME.probabilities.normal, center.ability.extra.odds}}
+  end,
+  calculate = function(self,card,context)
+    if context.ending_shop and pseudorandom('gab') < G.GAME.probabilities.normal/card.ability.extra.odds then
+      local jokers_to_create = math.min(1,
+        G.jokers.config.card_limit - (#G.jokers.cards + G.GAME.joker_buffer))
+      G.GAME.joker_buffer = G.GAME.joker_buffer + jokers_to_create
+      G.E_MANAGER:add_event(Event({
+        func = function()
+          local card = create_card('Joker', G.jokers, nil, nil, nil, nil,nil, nil)
+          card.ability.tolg_stick = true
+          local edition = {negative = true}
+          card:set_edition(edition, true)
+          card:add_to_deck()
+          G.jokers:emplace(card)
+          card:start_materialize()
+          G.GAME.joker_buffer = 0
+          return true
+        end
+      }))
+    end
+  end,
+}
+
 -- Belphegor
 SMODS.Joker{
   key = 'belphegor',
@@ -1462,7 +1553,6 @@ SMODS.Consumable{
   can_use = function(self, card)
 		return #G.jokers.highlighted
 				+ #G.hand.highlighted
-				+ (G.pack_cards and #G.pack_cards.highlighted or 0)
 			== 1
 	end,
   use = function(self, card, area, copier)
@@ -1636,16 +1726,15 @@ SMODS.Back{
   loc_txt = {
     name = 'Team One Large Guy Deck',
 	  text = {
-      'Start with {C:green}Bless{},',
-      'a {C:spectral}Sending Stone{} and ',
-      'an {C:spectral}Honorary Badge{}'
+      'Start with {C:green}Bless{}',
+      'and a {C:spectral}Sending Stone{}'
     }
   },
   unlocked = true,
   discovered = true,
   order = '17',
   atlas = 'tolgdeck',
-	config = {vouchers = {'v_tolg_bless'},consumables = {'c_tolg_sending','c_tolg_badge'}},
+	config = {vouchers = {'v_tolg_bless'},consumables = {'c_tolg_sending'}},
 	pos = { x = 0, y = 0 },
 }
 
@@ -1719,6 +1808,12 @@ SMODS.Voucher{
     end
   end
 }
+
+-- Sleeves Patch
+tolgSleeves = (SMODS.Mods['CardSleeves'] or {}).can_load
+if tolgSleeves then
+	NFS.load(TOLG.path .. 'util/sleeves/tolgsleeve.lua')()
+end
 
 -- Multiplayer Patch
 tolgMulti = (SMODS.Mods["VirtualizedMultiplayer"] or {}).can_load

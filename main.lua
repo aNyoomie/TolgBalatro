@@ -984,7 +984,7 @@ SMODS.Joker{
   calculate = function(self,card,context)
     if context.consumeable and not context.blueprint then
 			if context.consumeable.ability.set == "Planet" then
-        if pseudorandom('adv') < G.GAME.probabilities.normal/card.ability.extra.odds then
+        if true then
           card.ability.extra.uses = card.ability.extra.uses+1
           if context.consumeable.config.center.key == "c_mp_asteroid" then
             G.MULTIPLAYER.asteroid()

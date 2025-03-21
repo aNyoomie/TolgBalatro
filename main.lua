@@ -957,11 +957,11 @@ SMODS.Joker{
   end,
 }
 
--- Copyvena
+-- Viva
 SMODS.Joker{
-  key = 'copyvena',
+  key = 'viva',
   loc_txt = {
-    name = 'Advena (Copy)',
+    name = 'Viva',
 	  text = {
       'Retriggers used {C:planet}Planet{} cards,',
       'Expires after #2# Retriggers {C:inactive}({C:attention}#1#{C:inactive}/{C:attention}#2#{C:inactive})'

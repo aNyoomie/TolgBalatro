@@ -1,0 +1,37 @@
+Important Note!
+This version adds Discovery and Unlocking to a majority of Jokers, so this version is best experienced on a new profile, preferably with all base game unlocks (for your sake <3)
+The best way to do this would be to Unlock All on a new profile while this mod is NOT enabled, and then load the mod!
+
+Olivia
+- Now requires you to reach 10% score to Prevent Death
+(previously, she had no limit on how often she could Prevent Death if enough retriggers gave her the required chips, resulting in an infinite build.)
+- Now has a custom Saved message!
+
+Jason
+Now worded "If AN Ardric is owned" as opposed to "If Ardric is owned" (Keep this in mind!)
+
+Belphegor
+Now has a custom Saved message!
+
+Vesta 
+- Previous Ability: 
+  1.5X on scored wild cards
+- New Ability:
+  Retriggers wild cards played or held in hand
+
+Advena (Copy)
+Now named Viva, as she was given a unique name.
+
+Reorganised Jokers in Collection
+Bomb is now hidden in Collection (But unchanged, still made by Ave!)
+
+Added New Jokers!
+- Olivia (Wolf Form)
+- Feesh
+- Ardric (Crown)
+- Emi (Infected)
+- Ave (Raven Queen)
+- Jason (Jetpack)
+
+Internal:
+Relocated Jokers to be in own files corresponding to the joker page they are on to reduce code crowding

@@ -1,0 +1,235 @@
+[manifest]
+version = "1.0.0"
+priority = -2
+
+#ardric
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "if args.type == 'win_custom' then"
+position = "after"
+payload = '''
+    if card.key == 'j_tolg_ardcrown' then 
+        for i = 1, #G.jokers.cards do
+            if G.jokers.cards[i].config.center.key == 'j_tolg_ardric' then
+                ret = true
+                unlock_card(card)
+            end
+        end
+    end
+'''
+match_indent = true
+
+#melody, embolden
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "if args.type == 'hand_contents' then"
+position = "after"
+payload = '''
+	if card.key == 'j_tolg_melbone' then
+		local tally = 0
+        for j = 1, #args.cards do
+            if args.cards[j]:get_id() == 6 then
+                tally = tally+1
+            end
+        end
+        if tally >= 5 then 
+            ret = true
+            unlock_card(card)
+        end
+	end
+    if card.key == 'v_tolg_embolden' then
+        for j = 1, #args.cards do
+            if args.cards[j].config.center_key == "m_lucky" then
+                if G.GAME.probabilities.normal >= 5 then 
+                    ret = true
+                    unlock_card(card)
+                end
+            end
+        end
+	end
+'''
+match_indent = true
+
+#wolf, feesh, jason, eye
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "if args.type == 'round_win' then"
+position = "after"
+payload = '''
+	if card.key == 'j_tolg_wolf' then
+		if G.localization.misc.dictionary.ph_mr_bones == "Revivified by Olivia!" then
+		    ret = true
+		    unlock_card(card)
+		end
+	end
+    if card.key == 'j_tolg_feesh' then
+        for i = 1, #G.jokers.cards do
+            if G.jokers.cards[i].config.center.key == 'j_tolg_fish' then
+                if G.jokers.cards[i].ability.extra.Xmult >= G.jokers.cards[i].ability.extra.Xmult_cap then
+                    ret = true
+                    unlock_card(card)
+                end
+            end
+        end
+	end
+    if card.key == 'j_tolg_jasonpack' then
+        local ar = false
+        local ja = false
+        for i = 1, #G.jokers.cards do
+            if G.jokers.cards[i].config.center.key == 'j_tolg_ardric' then
+                ar = true
+            elseif G.jokers.cards[i].config.center.key == 'j_tolg_ardcrown' then
+                ar = true
+            elseif G.jokers.cards[i].config.center.key == 'j_tolg_jason' then
+                ja = true
+            end
+        end
+        if ar and ja then
+            ret = true
+            unlock_card(card)
+        end
+	end
+    if card.key == 'j_tolg_eye' then
+        for i = 1, #G.jokers.cards do
+            if G.jokers.cards[i].sell_cost >= 25 then
+                ret = true
+                unlock_card(card)
+            end
+        end
+	end
+'''
+match_indent = true
+
+# add joker check
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if not self.added_to_deck then"
+position = "before"
+payload = '''
+G.GAME.latest_added_jimbo = self.config.center_key
+check_for_unlock({type = 'add_joker'})
+'''
+match_indent = true
+
+# recall latest sold thing
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "G.CONTROLLER.locks.selling_card = true"
+position = "after"
+payload = '''
+G.GAME.latest_sold_jimbo = self.config.center_key
+if (G.GAME.latest_sold_jimbo == "j_tolg_olivia") or (G.GAME.latest_sold_jimbo == "j_tolg_wolf") then
+    G.GAME.oliv_sold = true
+end
+check_for_unlock({type = 'sell_joker'})
+'''
+match_indent = true
+
+#consumable check
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.ability.name == 'Wraith' then"
+position = "before"
+payload = '''
+if self.ability.name == 'The Wheel of Fortune' then
+    if not G.GAME.wheels_used then G.GAME.wheels_used = 0 end
+    G.GAME.wheels_used = G.GAME.wheels_used + 1
+end
+check_for_unlock({type = 'use_consumable'})
+'''
+match_indent = true
+
+#yuri check
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "check_for_unlock({type = 'chip_score', chips = math.floor(hand_chips*mult)})"
+position = "after"
+payload = '''
+check_for_unlock({type = 'jimbo_score'})
+'''
+match_indent = true
+
+#yuri,isla,vesta,cain,belph
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "if args.type == 'round_win' then"
+position = "before"
+payload = '''
+    if args.type == 'jimbo_score' then
+       if card.key == 'j_tolg_eyemi' then
+            for i = 1, #G.jokers.cards do
+                if G.jokers.cards[i].config.center.key == 'j_tolg_emiliana' then
+                    if G.jokers.cards[i].ability.extra.mult >= 20 then
+                        ret = true
+                        unlock_card(card)
+                    end
+                end
+            end
+        end
+        if card.key == 'j_tolg_viva' then
+            for i = 1, #G.jokers.cards do
+                if G.jokers.cards[i].config.center.key == 'j_tolg_advena' then
+                    local planets_used = 0
+                    for k, v in pairs(G.GAME.consumeable_usage) do if v.set == 'Planet' then planets_used = planets_used + 1 end end
+                    if G.jokers.cards[i].ability.extra.mult_bonus*planets_used >= 18 then
+                        ret = true
+                        unlock_card(card)
+                    end
+                end
+            end
+        end
+    end
+    if args.type == 'add_joker' then
+        if card.key == 'j_tolg_isla' then
+            if (G.GAME.latest_added_jimbo == "j_tolg_olivia") or (G.GAME.latest_added_jimbo == "j_tolg_wolf") then
+                if G.GAME.oliv_sold then
+                    ret = true
+                    unlock_card(card)
+                end
+            end
+        end
+    end
+    if args.type == 'use_consumable' then
+        if card.key == 'j_tolg_cain' then
+            if (G.GAME.wheels_used or 0) >= 5 then
+                ret = true
+                unlock_card(card)
+            end
+        end
+    end
+    if args.type == 'sell_joker' then
+        if card.key == 'j_tolg_belphegor' then
+            if G.GAME.latest_sold_jimbo == "j_egg" then
+                ret = true
+                unlock_card(card)
+            end
+        end
+        if card.key == 'j_tolg_raven' and G.GAME.latest_sold_jimbo == "j_tolg_ave" then
+            for i = 1, #G.jokers.cards do
+                if G.jokers.cards[i].config.center.key == 'j_tolg_ave' then
+                    if G.jokers.cards[i].sell_cost >= 25 then
+                        ret = true
+                        unlock_card(card)
+                    end
+                end
+            end
+        end
+        if card.key == 'j_tolg_vesta' then
+            if G.GAME.latest_sold_jimbo == "j_tolg_cain" then
+                ret = true
+                unlock_card(card)
+            end
+        end
+    end
+    
+'''
+match_indent = true
+

@@ -1,7 +1,7 @@
 CardSleeves.Sleeve {
     key = 'tolg',
-    unlocked = true,
-    discovered = true,
+    unlocked = false,
+    unlock_condition = { deck = "b_tolg_tolgdeck", stake = "stake_white" },
     atlas = 'tolgSleeves',
     pos = {
         x = 0,

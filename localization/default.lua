@@ -17,10 +17,8 @@ return {
 			},
 			['ardric'] = {
 				["text"] = {
-					'Disables effect of',
-					'every {C:attention}Boss Blind',
-					'{C:red}1 {C:green}in 10{} chance this card',
-					'is destroyed at end of round'
+					'Has a {C:red}1 {C:green}in 10{} chance to be ',
+					'destroyed at end of round'
 				},
 			},
 			['dracolich'] = {
@@ -28,6 +26,12 @@ return {
 					'This Joker gives an',
 					'additional {X:mult,C:white}X0.5{} for',
 					'every {C:attention}hand remaining{}'
+				},
+			},
+			['charges'] = {
+				["text"] = {
+					'Recharge {C:attention}1{} at end of round',
+					'Recharge {C:attention}all{} at end of {C:attention}Boss Blind'
 				},
 			},
 		},
@@ -66,6 +70,16 @@ return {
 			["text"] = {
 			  "Wafferscotch",
 			},
+		  },
+		  ['sicko'] = {
+			["text"] = {
+			  "Sickoblitz",
+			},
+		  },
+		  ['pecu'] = {
+			["text"] = {
+			  "Peculiarity",
+			},
 		  }
 		},
 		Sleeve = {
@@ -82,19 +96,6 @@ return {
 					'Start with {C:green}Emboldening Bond{}',
 					'and an {C:spectral}Honorary Badge{}'
 				},
-			  }, 
-			sleeve_tolg_eye = {
-				name = 'Eye Sleeve',
-				text = {
-				'Start with {C:attention}Isla{}, who',
-				'has a {C:green}TOLG Sticker{}'
-			}
-			},
-			sleeve_tolg_eye_alt = {
-				name = "Eye Sleeve",
-				text = {
-				'Start with {C:attention}The Great Eye{}',
-				}
-			},
+			  },
         },	
 	  }}

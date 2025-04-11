@@ -6,6 +6,8 @@ G.ARGS.LOC_COLOURS['ssick'] = HEX('6EB172')
 G.ARGS.LOC_COLOURS['espeon'] = HEX('B296C6')
 G.ARGS.LOC_COLOURS['chaos-draco'] = HEX('4F6367')
 G.ARGS.LOC_COLOURS['waffer'] = HEX('E19035')
+G.ARGS.LOC_COLOURS['sicko'] = HEX('973752')
+G.ARGS.LOC_COLOURS['pecu'] = HEX('418F41')
 
 function tolg_artist_tooltip(_c, info_queue, card, desc_nodes, specific_vars, full_UI_table)
     localize{type = 'descriptions', set = 'Tolg Artist', key = _c.key, nodes = desc_nodes, vars = specific_vars or _c.vars}

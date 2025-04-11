@@ -1,0 +1,72 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+#emi reset
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''
+reset_idol_card()
+'''
+position = 'after'
+payload = '''
+reset_emi_card()
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''
+reset_idol_card()
+reset_mail_rank()
+self.GAME.current_round.ancient_card.suit = nil
+reset_ancient_card()
+'''
+position = 'after'
+payload = '''
+self.GAME.current_round.emi_card.suit = nil
+reset_emi_card()
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''
+idol_card = {suit = 'Spades', rank = 'Ace'},
+mail_card = {rank = 'Ace'},
+ancient_card = {suit = 'Spades'},
+'''
+position = 'after'
+payload = '''
+emi_card = {suit = 'Spades'},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''
+if valid_castle_cards[1] then 
+        local castle_card = pseudorandom_element(valid_castle_cards, pseudoseed('cas'..G.GAME.round_resets.ante))
+        G.GAME.current_round.castle_card.suit = castle_card.base.suit
+    end
+end
+'''
+position = 'after'
+payload = '''
+
+function reset_emi_card()
+    local emi_suits = {}
+    for k, v in ipairs({'Spades','Hearts','Clubs','Diamonds'}) do
+        if v ~= G.GAME.current_round.emi_card.suit then emi_suits[#emi_suits + 1] = v end
+    end
+    local emi_card = pseudorandom_element(emi_suits, pseudoseed('tux'..G.GAME.round_resets.ante))
+    G.GAME.current_round.emi_card.suit = emi_card
+end
+
+'''
+match_indent = true

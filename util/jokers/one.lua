@@ -1045,8 +1045,6 @@ SMODS.Joker{
         saved = true,
         colour = G.C.RED
       }
-    elseif context.ending_shop then
-      G.localization.misc.dictionary.ph_mr_bones = card.config.old_bones
     end
   end
 }
@@ -1090,6 +1088,8 @@ SMODS.Joker{
       card = card,
       Xmult_mod = (card.ability.extra.Xmult+(card.ability.extra.Xmult_bonus*G.GAME.current_round.hands_left)),
       message = 'X' .. (card.ability.extra.Xmult+(card.ability.extra.Xmult_bonus*G.GAME.current_round.hands_left)) .. ' Mult'}
+    elseif context.ending_shop then
+      G.localization.misc.dictionary.ph_mr_bones = card.config.old_bones
     end
   end,
 }
